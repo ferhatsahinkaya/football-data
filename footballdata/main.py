@@ -1,10 +1,10 @@
-from footballapi.api import FootballApi
-from match.topbottompercent import TopBottomPercent
+from footballapi import footballapi
+from match import match
 
 
 def main():
-    for competition in FootballApi.get_competitions():
-        print(TopBottomPercent.get_matches(competition))
+    for competition in footballapi.get_competitions():
+        print(match.get_matches(competition, None))
 
 
 if __name__ == "__main__":

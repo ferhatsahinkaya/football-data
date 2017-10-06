@@ -1,39 +1,34 @@
 from math import ceil
 
-from footballapi.api import FootballApi
+from footballapi import footballapi
 
 
-class TopBottomPercent:
-    def __init__(self):
-        pass
+def before_or_equal(team, standing, position):
+    return standing[team] <= position
 
-    @staticmethod
-    def before_or_equal(team, standing, position):
-        return standing[team] <= position
 
-    @staticmethod
-    def after_or_equal(team, standing, position):
-        return standing[team] >= position
+def after_or_equal(team, standing, position):
+    return standing[team] >= position
 
-    @staticmethod
-    def get_matches(competition):
-        selected_matches = []
-        standing = FootballApi.get_standing(competition['id'])
 
-        if standing:
-            number_of_teams = len(standing)
-            group_size = ceil(number_of_teams * 0.2)
+def get_matches(competition):
+    selected_matches = []
+    standing = footballapi.get_standing(competition['id'])
 
-            matches = FootballApi.get_next_week_matches(competition['id'])
+    if standing:
+        number_of_teams = len(standing)
+        group_size = ceil(number_of_teams * 0.2)
 
-            selected_matches = [match for match in matches
-                                if (
-                                    TopBottomPercent.before_or_equal(match['homeTeamId'], standing, group_size)
-                                    and TopBottomPercent.after_or_equal(match['awayTeamId'], standing,
-                                                                        number_of_teams - group_size + 1))
-                                or (
-                                    TopBottomPercent.before_or_equal(match['awayTeamId'], standing, group_size)
-                                    and TopBottomPercent.after_or_equal(match['homeTeamId'], standing,
-                                                                        number_of_teams - group_size + 1))]
+        matches = footballapi.get_next_week_matches(competition['id'])
 
-        return selected_matches
+        selected_matches = [match for match in matches
+                            if (
+                                before_or_equal(match['homeTeamId'], standing, group_size)
+                                and after_or_equal(match['awayTeamId'], standing,
+                                                   number_of_teams - group_size + 1))
+                            or (
+                                before_or_equal(match['awayTeamId'], standing, group_size)
+                                and after_or_equal(match['homeTeamId'], standing,
+                                                   number_of_teams - group_size + 1))]
+
+    return selected_matches
