@@ -23,7 +23,7 @@ def get_matches(competition, filter):
 
     if standing:
         number_of_teams = len(standing)
-        group_size = ceil(number_of_teams * (filter['percentage'] / 100))
+        group_size = ceil(number_of_teams * (filter['value'] / 100))
 
         matches = footballapi.get_next_week_matches(competition['id'])
 
