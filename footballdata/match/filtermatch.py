@@ -1,4 +1,4 @@
-from .filters import topbottompercent
+from .filters.strategy import topbottompercent
 
 filter_types = {
     'topbottompercent': topbottompercent

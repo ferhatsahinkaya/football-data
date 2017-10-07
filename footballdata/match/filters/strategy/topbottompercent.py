@@ -2,8 +2,8 @@ import logging
 from footballapi import footballapi
 from math import ceil
 
-from .domain.filterresult import FilterResult
-from .domain.match import Match
+from ..domain.filterresult import FilterResult
+from ..domain.match import Match
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
