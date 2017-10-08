@@ -3,7 +3,6 @@ from footballapi import footballapi
 from math import ceil
 
 from ..domain.filterresult import FilterResult
-from ..domain.match import Match
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -23,7 +22,7 @@ def get_matches(competition, filter):
 
     if standing:
         number_of_teams = len(standing)
-        group_size = ceil(number_of_teams * (filter['value'] / 100))
+        group_size = ceil(number_of_teams * (filter['percent'] / 100))
 
         matches = footballapi.get_next_week_matches(competition['id'])
 
@@ -41,3 +40,16 @@ def get_matches(competition, filter):
                         [Match(match['date'], match['homeTeamName'], standing[match['homeTeamId']],
                                match['awayTeamName'], standing[match['awayTeamId']])
                          for match in selected_matches])
+
+
+class Match:
+    def __init__(self, datetime, home_team, home_team_standing, away_team, away_team_standing):
+        self.datetime = datetime
+        self.homeTeam = home_team
+        self.homeTeamStanding = home_team_standing
+        self.awayTeam = away_team
+        self.awayTeamStanding = away_team_standing
+
+    def __str__(self):
+        return '{} {}({}) - {}({})'.format(self.datetime, self.homeTeam, self.homeTeamStanding, self.awayTeam,
+                                           self.awayTeamStanding)
