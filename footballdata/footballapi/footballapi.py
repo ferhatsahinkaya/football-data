@@ -19,6 +19,8 @@ def get_competitions():
 
     return competitions
 
+def get_competition_ids():
+    return [competition['id'] for competition in get_competitions()]
 
 def get_standing(competition_id):
     league_table = get_league_table(competition_id)

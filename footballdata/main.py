@@ -14,6 +14,8 @@ group.add_argument('-uo', '--underover', dest='numberofgoals', type=int,
                    help='Finds matches which are to be under/over goals with at least given chance')
 parser.add_argument('-p', '--percent', dest='percent', type=int, choices=range(1, 101), required=True,
                     help='Percentage between 1 and 100 (both inclusive)')
+parser.add_argument('-c', '--competitions', dest='competitions', type=int, nargs='*', choices=footballapi.get_competition_ids(),
+                    help='League to be searched for matches')
 
 args = parser.parse_args()
 
@@ -25,7 +27,11 @@ def main():
     else:
         filter = {'type': 'topbottom', 'percent': args.percent}
 
-    for competition in footballapi.get_competitions():
+    competitions = footballapi.get_competitions()
+    competitions = [competition for competition in competitions if competition['id'] in args.competitions] \
+        if args.competitions is not None else competitions
+
+    for competition in competitions:
         logger.info(filtermatch.get_matches(competition, filter))
 
 
