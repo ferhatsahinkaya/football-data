@@ -18,6 +18,8 @@ parser.add_argument('-c', '--competitions', dest='competitions', nargs='*', choi
                     help='League to be searched for matches')
 parser.add_argument('-ht', '--halftime', action='store_true',
                     help='Return results based on half time scores')
+parser.add_argument('-ha', '--homeaway', action='store_true',
+                    help='Return results based on home/away stats. For example, if under/over query is being run, only home games of home team or away games of away team will be used in calculation')
 
 args = parser.parse_args()
 
@@ -26,8 +28,11 @@ def main():
     logger.info(args)
     if args.numberofgoals:
         filter = {'type': 'underover', 'numberofgoals': args.numberofgoals, 'percent': args.percent,
-                  'halftime': args.halftime}
+                  'halftime': args.halftime, 'homeaway': args.homeaway}
     else:
+        if args.halftime or args.homeaway:
+            raise ValueError("halftime or homeaway is not applicable for topbottom queries")
+
         filter = {'type': 'topbottom', 'percent': args.percent}
 
     competitions = footballapi.get_competitions()

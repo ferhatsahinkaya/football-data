@@ -1,7 +1,6 @@
 import logging
 from footballapi import footballapi
 from functools import reduce
-import json
 
 from ..domain.filterresult import FilterResult
 
@@ -9,6 +8,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 filter = {}
+
 
 def combine_stats(home_team_stats, away_team_stats):
     return {
@@ -27,15 +27,19 @@ def has_probability(team_stats, expected_chance):
 def get_matches(competition, search_filter):
     matches = footballapi.get_next_week_matches(competition['id'])
     filter['halftime'] = search_filter['halftime']
+    filter['homeaway'] = search_filter['homeaway']
     filter['numberofgoals'] = search_filter['numberofgoals']
     filter['chance'] = search_filter['percent']
+    filter['competitionId'] = competition['id']
 
     selected_match_and_stats = [
         {
             'match': match,
             'stats': combine_stats(
-                get_over_under_stats(match['homeTeamId'], filter['numberofgoals']),
-                get_over_under_stats(match['awayTeamId'], filter['numberofgoals']))
+                get_over_under_stats(match['homeTeamId'], filter['numberofgoals'],
+                                     {'home': True, 'away': not filter['homeaway']}),
+                get_over_under_stats(match['awayTeamId'], filter['numberofgoals'],
+                                     {'home': not filter['homeaway'], 'away': True}))
         } for match in matches]
 
     return FilterResult(competition['caption'],
@@ -50,10 +54,14 @@ def get_goal_count(match):
     return result['goalsHomeTeam'] + result['goalsAwayTeam']
 
 
-def get_over_under_stats(team_id, number_of_goals):
+def get_over_under_stats(team_id, number_of_goals, games_filter):
     fixtures = footballapi.get_team_fixtures(team_id)
 
-    finished_games = [match for match in fixtures if match['status'] == 'FINISHED']
+    finished_games = [match for match in fixtures
+                      if match['competitionId'] == filter['competitionId']
+                      and match['status'] == 'FINISHED'
+                      and ((games_filter['home'] and match['homeTeamId'] == team_id)
+                           or (games_filter['away'] and match['awayTeamId'] == team_id))]
     finished_game_count = len(finished_games)
 
     results = reduce(lambda r1, r2:
