@@ -1,12 +1,14 @@
 import logging
 from footballapi import footballapi
 from functools import reduce
+import json
 
 from ..domain.filterresult import FilterResult
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+filter = {}
 
 def combine_stats(home_team_stats, away_team_stats):
     return {
@@ -22,28 +24,30 @@ def has_probability(team_stats, expected_chance):
            or team_stats['over_or_equal_chance'] >= expected_chance
 
 
-def get_matches(competition, filter):
+def get_matches(competition, search_filter):
     matches = footballapi.get_next_week_matches(competition['id'])
-    number_of_goals = filter['numberofgoals']
-    chance = filter['percent']
+    filter['halftime'] = search_filter['halftime']
+    filter['numberofgoals'] = search_filter['numberofgoals']
+    filter['chance'] = search_filter['percent']
 
     selected_match_and_stats = [
         {
             'match': match,
             'stats': combine_stats(
-                get_over_under_stats(match['homeTeamId'], number_of_goals),
-                get_over_under_stats(match['awayTeamId'], number_of_goals))
+                get_over_under_stats(match['homeTeamId'], filter['numberofgoals']),
+                get_over_under_stats(match['awayTeamId'], filter['numberofgoals']))
         } for match in matches]
 
     return FilterResult(competition['caption'],
                         [Match(match_and_stats['match']['date'], match_and_stats['match']['homeTeamName'],
                                match_and_stats['match']['awayTeamName'], match_and_stats['stats'])
                          for match_and_stats in selected_match_and_stats
-                         if has_probability(match_and_stats['stats'], chance)])
+                         if has_probability(match_and_stats['stats'], filter['chance'])])
 
 
 def get_goal_count(match):
-    return match['result']['goalsHomeTeam'] + match['result']['goalsAwayTeam']
+    result = match['result']['halfTime'] if filter['halftime'] and 'halfTime' in match['result'] else match['result']
+    return result['goalsHomeTeam'] + result['goalsAwayTeam']
 
 
 def get_over_under_stats(team_id, number_of_goals):
