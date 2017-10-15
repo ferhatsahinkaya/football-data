@@ -1,0 +1,9 @@
+{% if matches %}
+<ul>
+    {% for match in matches %}
+    <li>{{ match }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No matches found</p>
+{% endif %}
