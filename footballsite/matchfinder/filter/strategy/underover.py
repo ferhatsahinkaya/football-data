@@ -82,12 +82,12 @@ class Match:
     def __init__(self, datetime, home_team, away_team, stats):
         self.datetime = datetime
         self.homeTeam = home_team
-        self.away_team = away_team
+        self.awayTeam = away_team
         self.stats = stats
 
     def __str__(self):
         return '{} {} - {} (under_or_equal_chance:{}%, over_or_equal_chance: {}%)' \
-            .format(self.datetime, self.homeTeam, self.away_team, self.stats['under_or_equal_chance'],
+            .format(self.datetime, self.homeTeam, self.awayTeam, self.stats['under_or_equal_chance'],
                     self.stats['over_or_equal_chance'])
 
 

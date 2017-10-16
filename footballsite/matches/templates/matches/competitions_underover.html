@@ -1,0 +1,34 @@
+{% autoescape on %}
+
+{% for competition in competitions %}
+
+{% if competition %}
+<ul>
+    <h1>{{ competition.name }}</h1>
+    <table width="100%">
+        <tr>
+            <th>Time</th>
+            <th>Home Team</th>
+            <th>Away Team</th>
+            <th>Under or Equal Chance</th>
+            <th>Over or Equal Chance</th>
+        </tr>
+        {% for match in competition.matches %}
+        <tr>
+            <td>{{ match.datetime }}</td>
+            <td>{{ match.homeTeam }}</td>
+            <td>{{ match.awayTeam }}</td>
+            <td>{{ match.stats.under_or_equal_chance }}%</td>
+            <td>{{ match.stats.over_or_equal_chance }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+</ul>
+{% else %}
+<p>{{ filter }}</p>
+<p>No leagues found</p>
+{% endif %}
+
+{% endfor %}
+
+{% endautoescape %}

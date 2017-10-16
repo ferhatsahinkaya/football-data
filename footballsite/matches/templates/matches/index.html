@@ -1,29 +1,39 @@
 {% autoescape on %}
 
-{% for competition in competitions %}
+<h1>Select Filter</h1>
 
-{% if competition %}
-<ul>
-    <h1>{{ competition.name }}</h1>
-    <table width="100%">
+<form action="competitions" method="get">
+    <table>
         <tr>
-            <th>Time</th>
-            <th>Home Team</th>
-            <th>Away Team</th>
+            <td><b><label for="filter_type">Filter Type</label></b></td>
+            <td><select id="filter_type" name="filter_type">
+                {% for filter in filters %}
+                <option value="{{ filter.type }}">{{ filter.type|capfirst }}</option>
+                {% endfor %}
+            </select></td>
         </tr>
-        {% for match in competition.matches %}
         <tr>
-            <td>{{ match.datetime }}</td>
-            <td>{{ match.homeTeam }} ({{ match.homeTeamStanding }})</td>
-            <td>{{ match.awayTeam }} ({{ match.awayTeamStanding }})</td>
+            <td><b><label for="percent">Percent</label></b></td>
+            <td><input id="percent" name="percent" type="number" min="1" max="100"></td>
         </tr>
-        {% endfor %}
+        <tr>
+            <td><b><label for="numberofgoals">Number of Goals</label></b></td>
+            <td><input id="numberofgoals" name="numberofgoals" type="number" min="1" max="9"></td>
+        </tr>
+        <tr>
+            <td><b><label for="homeaway">Home Away</label></b></td>
+            <td><input type="checkbox" id="homeaway" name="homeaway"></td>
+        </tr>
+        <tr>
+            <td><input type="radio" id="halftime" name="halffulltime" value="halftime"><label for="halftime">Half
+                Time</label></td>
+            <td><input type="radio" id="fulltime" name="halffulltime" value="fulltime" checked><label for="fulltime">Full
+                Time</label></td>
+        </tr>
+        <tr>
+            <td><input type="submit"></td>
+        </tr>
     </table>
-</ul>
-{% else %}
-<p>No leagues found</p>
-{% endif %}
-
-{% endfor %}
+</form>
 
 {% endautoescape %}
