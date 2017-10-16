@@ -1,9 +1,29 @@
-{% if matches %}
+{% autoescape on %}
+
+{% for competition in competitions %}
+
+{% if competition %}
 <ul>
-    {% for match in matches %}
-    <li>{{ match }}</li>
-    {% endfor %}
+    <h1>{{ competition.name }}</h1>
+    <table width="100%">
+        <tr>
+            <th>Time</th>
+            <th>Home Team</th>
+            <th>Away Team</th>
+        </tr>
+        {% for match in competition.matches %}
+        <tr>
+            <td>{{ match.datetime }}</td>
+            <td>{{ match.homeTeam }} ({{ match.homeTeamStanding }})</td>
+            <td>{{ match.awayTeam }} ({{ match.awayTeamStanding }})</td>
+        </tr>
+        {% endfor %}
+    </table>
 </ul>
 {% else %}
-<p>No matches found</p>
+<p>No leagues found</p>
 {% endif %}
+
+{% endfor %}
+
+{% endautoescape %}

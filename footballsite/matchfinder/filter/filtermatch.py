@@ -1,6 +1,5 @@
-from footballsite.footballsite.matchfinder.filter.strategy import underover
-
-from footballsite.matchfinder import topbottom
+from matchfinder.filter.strategy import topbottom
+from matchfinder.filter.strategy import underover
 
 filter_types = {
     'topbottom': topbottom,

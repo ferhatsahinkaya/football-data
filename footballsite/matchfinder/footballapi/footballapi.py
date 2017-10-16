@@ -8,12 +8,6 @@ headers = {'X-Auth-Token': 'a076b21e36044e88830990b9ffe2bb04', 'X-Response-Contr
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-
-def test():
-    print('test')
-    pass
-
-
 def get_competitions():
     try:
         competitions = get_or_wait('http://api.football-data.org/v1/competitions')

@@ -1,8 +1,7 @@
 import logging
-from footballapi import footballapi
+from matchfinder.filter.domain.competition import Competition
+from matchfinder.footballapi import footballapi
 from math import ceil
-
-from ..domain.filterresult import FilterResult
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -36,8 +35,8 @@ def get_matches(competition, filter):
                                 and after_or_equal(match['homeTeamId'], standing,
                                                    number_of_teams - group_size + 1))]
 
-    return FilterResult(competition['caption'],
-                        [Match(match['date'], match['homeTeamName'], standing[match['homeTeamId']],
+    return Competition(competition['caption'],
+                       [Match(match['date'], match['homeTeamName'], standing[match['homeTeamId']],
                                match['awayTeamName'], standing[match['awayTeamId']])
                          for match in selected_matches])
 

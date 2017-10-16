@@ -1,8 +1,7 @@
 import logging
-from footballapi import footballapi
 from functools import reduce
-
-from ..domain.filterresult import FilterResult
+from matchfinder.filter.domain.competition import Competition
+from matchfinder.footballapi import footballapi
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -42,8 +41,8 @@ def get_matches(competition, search_filter):
                                      {'home': not filter['homeaway'], 'away': True}))
         } for match in matches]
 
-    return FilterResult(competition['caption'],
-                        [Match(match_and_stats['match']['date'], match_and_stats['match']['homeTeamName'],
+    return Competition(competition['caption'],
+                       [Match(match_and_stats['match']['date'], match_and_stats['match']['homeTeamName'],
                                match_and_stats['match']['awayTeamName'], match_and_stats['stats'])
                          for match_and_stats in selected_match_and_stats
                          if has_probability(match_and_stats['stats'], filter['chance'])])
