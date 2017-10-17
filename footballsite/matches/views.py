@@ -7,12 +7,14 @@ pages = {
     'underover': 'competitions_underover.html'
 }
 
-def index(request):
-    context = {'filters': [
-        {'type': 'topbottom'},
-        {'type': 'underover'}
-    ]}
 
+def index(request):
+    context = {
+        'leagues': footballapi.get_competition_ids(),
+        'filters': [
+            {'type': 'topbottom'},
+            {'type': 'underover'}
+        ]}
     return render(request, 'matches/index.html', context)
 
 
@@ -22,11 +24,13 @@ def find_competitions(request):
         filter = {'type': filter_type, 'percent': int(request.GET['percent'])}
     else:
         filter = {'type': filter_type, 'percent': int(request.GET['percent']),
-                  'numberofgoals': int(request.GET['numberofgoals']), 'homeaway': request.GET['homeaway'] == 'on',
+                  'numberofgoals': int(request.GET['numberofgoals']),
+                  'homeaway': 'homeaway' in request.GET and request.GET['homeaway'] == 'on',
                   'halftime': request.GET['halffulltime'] == 'halftime'}
 
     competitions = footballapi.get_competitions()
-    competitions = [competition for competition in competitions]
+    competitions = [competition for competition in competitions if competition['league'] in request.GET['league']] \
+        if request.GET['league'] is not 'All' else competitions
 
     result = [filtermatch.get_matches(competition, filter) for competition in competitions]
     context = {'competitions': result}

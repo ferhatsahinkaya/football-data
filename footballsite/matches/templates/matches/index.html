@@ -5,6 +5,15 @@
 <form action="competitions" method="get">
     <table>
         <tr>
+            <td><b><label for="league">League</label></b></td>
+            <td><select id="league" name="league">
+                <option value="All">All Leagues</option>
+                {% for league in leagues %}
+                <option value="{{ league }}">{{ league }}</option>
+                {% endfor %}
+            </select></td>
+        </tr>
+        <tr>
             <td><b><label for="filter_type">Filter Type</label></b></td>
             <td><select id="filter_type" name="filter_type">
                 {% for filter in filters %}
